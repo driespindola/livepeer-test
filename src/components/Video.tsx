@@ -1,7 +1,10 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { Publication } from '../types/lens'
 import { Player } from '@livepeer/react';
 import axios from 'axios';
+import { sanitizeIpfsUrl } from '../utils/sanitizeIpfsUrl';
+import { parseArweaveTxId, parseCid } from 'livepeer/media';
+import { Box, Card } from '@mui/material';
 
 interface Props {
   publication: Publication
@@ -9,33 +12,43 @@ interface Props {
 
 const Video: FC<Props> = ({ publication }) => {
   const API_TOKEN = process.env.NEXT_PUBLIC_STUDIO_API_KEY
-  const ASSET_ID = '8de14fac-dbf4-4dd6-bb5b-fc2d618c2766'
   const [id, setId] = useState("")
+  const url = publication?.metadata?.media[0]?.original?.url
 
-  useEffect(() => {
-    const response = {
-      method: "get",
-      url: `https://livepeer.studio/api/asset/${ASSET_ID}`,
-      headers: {
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-    };
+  const idParsed = useMemo(() => parseCid(url) ?? parseArweaveTxId(url), [url]);
 
-    axios(response)
-      .then((result) => {
-        setId(result?.data?.playbackId);
-        console.log(id)
-      })
-      .catch((error) => {
-        error = new Error();
-      })
-    }, [])
+  console.log(idParsed)
+
+  // useEffect(() => {
+  //  const response = {
+  //    method: "get",
+  //    url: "https://livepeer.studio/api/asset",
+  //    headers: {
+  //      Authorization: `Bearer ${API_TOKEN}`,
+  //    },
+  //  };
+
+  //  axios(response)
+  //    .then((result) => {
+  //      setId(result?.data);
+  //      console.log(id)
+  //    })
+  //    .catch((error) => {
+  //      error = new Error();
+  //    })
+  //  }, [])
   
 
   return (
-    <div>
-      <Player playbackId={id} />
-    </div>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'colunm',
+      justifyContent: 'center',
+      margin: 'auto',
+      width: '300px'
+    }}>
+     Video 
+    </Box>
   )
 }
 

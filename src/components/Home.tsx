@@ -2,6 +2,8 @@ import React from 'react'
 import Video from './Video'
 import { ExplorePublicationResult, ExplorePublicationsDocument, Publication } from '../types/lens';
 import { useQuery } from '@apollo/client';
+import { Box, Container } from '@mui/material';
+import StreamButton from './Stream';
 
 const Home = () => {
   const { data, loading, error } = useQuery<{
@@ -22,14 +24,22 @@ const Home = () => {
   console.log("DATA", data?.explorePublications.items);
 
   return (
-    <div>
+    <Container>
+      <StreamButton />
       {publications?.map((publication) => (
-        <div>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          margin: 'auto',
+          textAlign: 'center',
+          padding: 3
+        }}>
           handle: {publication.profile.handle}
           <Video publication={publication as Publication} />
-        </div>
+        </Box>
       ))}
-    </div>
+    </Container>
   )
 }
 
