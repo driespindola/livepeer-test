@@ -1,25 +1,18 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { LivepeerConfig, createReactClient, studioProvider } from '@livepeer/react';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
-const client = createReactClient({
-  provider: studioProvider({ apiKey: process.env.NEXT_PUBLIC_STUDIO_API_KEY }),
-});
+import type { AppProps } from 'next/app';
+import { lazy, Suspense } from 'react';
 
-const APIURL = 'https://api-mumbai.lens.dev/';
+const Providers = lazy(() => import('../components/Providers'));
 
-export const apolloClient= new ApolloClient({
-  uri: APIURL,
-  cache: new InMemoryCache(),
-})
-
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <ApolloProvider client={apolloClient}>
-      <LivepeerConfig client={client}>
+    <Suspense>
+      <Providers>
         <Component {...pageProps} />
-      </LivepeerConfig>
-    </ApolloProvider>
-  )
-}
+      </Providers>
+    </Suspense>
+  );
+};
+
+export default App;

@@ -1,0 +1,18 @@
+query Publications(
+$request: PublicationsQueryRequest!
+$reactionRequest: ReactionFieldResolverRequest
+) {
+  publications(request: $request) {
+    items {
+      __typename 
+      ... on Post {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      prev
+      next
+      totalCount
+    }
+  }
+}

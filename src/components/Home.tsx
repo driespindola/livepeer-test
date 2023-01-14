@@ -4,6 +4,8 @@ import { ExplorePublicationResult, ExplorePublicationsDocument, Publication } fr
 import { useQuery } from '@apollo/client';
 import { Box, Container } from '@mui/material';
 import StreamButton from './Stream';
+import LoginContent from './LoginContent';
+import Link from 'next/link';
 
 const Home = () => {
   const { data, loading, error } = useQuery<{
@@ -26,6 +28,7 @@ const Home = () => {
   return (
     <Container>
       <StreamButton />
+      <LoginContent />
       {publications?.map((publication) => (
         <Box sx={{
           display: 'flex',
@@ -35,7 +38,9 @@ const Home = () => {
           textAlign: 'center',
           padding: 3
         }}>
-          handle: {publication.profile.handle}
+          <Link href={`/profile/${publication.profile.id}`}>
+            handle: {publication.profile.handle}
+          </Link>
           <Video publication={publication as Publication} />
         </Box>
       ))}
