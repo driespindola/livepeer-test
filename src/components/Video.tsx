@@ -47,7 +47,10 @@ const Video: FC<Props> = ({ publication }) => {
       margin: 'auto',
       width: '300px'
     }}>
-     Video 
+     <Player 
+        src={url}
+        autoUrlUpload={{ fallback: true, ipfsGateway: 'https://w3s.link' }}
+      />
     </Box>
   )
 }

@@ -8,6 +8,9 @@ interface Props {
 }
 
 const ProfilePublications: FC<Props> = ({ profile }) => {
+  const router = useRouter();
+  const { id } = router.query
+
   const { data, loading, error } = useQuery
   <{publications: PaginatedPublicationResult}>
   ((PublicationsDocument), {
@@ -16,15 +19,12 @@ const ProfilePublications: FC<Props> = ({ profile }) => {
         profileId: profile?.id,
         publicationTypes: ["POST"],
         limit: 10,
-        metadata: {
-          mainContentFocus: ["TEXT_ONLY"],
-        },
       }
-     },
+    },
   });
 
-  const publications = data?.publications.items
-  console.log(publications)
+  const publications = data?.publications.items;
+  console.log("DATA", data?.publications?.items);
 
   return (
     <>

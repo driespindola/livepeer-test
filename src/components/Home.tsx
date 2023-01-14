@@ -6,6 +6,7 @@ import { Box, Container } from '@mui/material';
 import StreamButton from './Stream';
 import LoginContent from './LoginContent';
 import Link from 'next/link';
+import UploadButton from './UploadButton';
 
 const Home = () => {
   const { data, loading, error } = useQuery<{
@@ -13,7 +14,7 @@ const Home = () => {
   }>(ExplorePublicationsDocument, {
     variables: {
       request: {
-        sortCriteria: "CURATED_PROFILES",
+        sortCriteria: "LATEST",
         publicationTypes: ["POST"],
         limit: 20,
         metadata: {
@@ -27,6 +28,7 @@ const Home = () => {
 
   return (
     <Container>
+      <UploadButton />
       <StreamButton />
       <LoginContent />
       {publications?.map((publication) => (
