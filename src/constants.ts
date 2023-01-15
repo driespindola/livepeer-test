@@ -15,7 +15,7 @@ export const STAGING_SANDBOX_API_URL = 'https://staging-api-social-mumbai.sandbo
 export const API_URL = getEnvConfig().apiEndpoint;
 export const IS_MAINNET = API_URL === MAINNET_API_URL;
 
-export const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_KEY
+export const ALCHEMY_KEY = 'TDoKtCS15Ew1YMfdEDZUVK6l6fpQbuXM'
 
 export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID;
 export const INFURA_RPC = IS_MAINNET
@@ -49,3 +49,5 @@ export const CHAIN_ID = IS_MAINNET ? POLYGON_MAINNET.id : POLYGON_MUMBAI.id;
 
 export const LENSPROTOCOL_HANDLE = 'lensprotocol';
 export const HANDLE_SUFFIX = IS_MAINNET ? '.lens' : '.test';
+
+export const SHOCKSTACK_API = process.env.NEXT_PUBLIC_STUDIO_SHOTSTACK_API_KEY
