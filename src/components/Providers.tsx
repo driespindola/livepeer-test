@@ -23,7 +23,7 @@ export const apolloClient= new ApolloClient({
 
 const { chains, provider } = configureChains(
   [IS_MAINNET ? polygon : polygonMumbai, mainnet],
-  [alchemyProvider({ apiKey: ALCHEMY_KEY })]
+  [alchemyProvider({ apiKey: `${ALCHEMY_KEY}` })]
 );
 
 const connectors = () => {
