@@ -5,13 +5,13 @@ import { mainnet, polygon, polygonMumbai } from 'wagmi/chains';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { ALCHEMY_KEY, IS_MAINNET } from '../constants';
+import { ALCHEMY_KEY, API_KEY, IS_MAINNET } from '../constants';
 import { ReactNode } from 'react';
 
 
 
 const client = createReactClient({
-  provider: studioProvider({ apiKey: process.env.NEXT_PUBLIC_STUDIO_API_KEY }),
+  provider: studioProvider({ apiKey: `${API_KEY}` }),
 });
 
 const APIURL = 'https://api-mumbai.lens.dev/';
