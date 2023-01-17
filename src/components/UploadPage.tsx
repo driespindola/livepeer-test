@@ -5,7 +5,7 @@ import { Player } from '@livepeer/react';
 import EditContent from './EditContent';
 
 const UploadPage = () => {
-    const [ data, setData ] = useState<any>([])
+    const [ id, setId ] = useState<any>([])
     const [ background, setBackground ] = useState<string>('')
     const [ title, setTitle ] = useState<string>('')
     const [ src, setSrc ] = useState<string>('')
@@ -13,6 +13,7 @@ const UploadPage = () => {
     const [ style, setStyle ] = useState<string>('')
     const [ transitionIn, setTransitionIn ] = useState<string>('')
     const [ transitionOut, setTransitionOut ] = useState<string>('')
+    const [ edited, setEdited ] = useState<boolean>(false)
 
 
 
@@ -207,8 +208,10 @@ const UploadPage = () => {
         .then(function(res) {
             return res.json();
         }).then(function(body) {
-            setData(body?.response);
+            setId(body?.response?.id);
+            console.log(body?.response?.id)
         });
+        setEdited(true)
     }
     return (
         <Box
@@ -222,130 +225,131 @@ const UploadPage = () => {
             width: '600px'
         }}
         >
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                margin: 3
-            }}>
-                <TextField
-                    sx={{
-                        marginRight: 3,
-                        width: '250px'
-                    }} 
-                    helperText='Insert Src Url for the Soundtrack' 
-                    onChange={(e) => setSrc(e.target.value)}
-                />
-                <TextField
-                    select
-                    label="Select"
-                    helperText="Please select your effect"
-                    onChange={(e) => setEffect(e.target.value)}
-                >
-                    {effects.map((option) => (
-                    
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Box>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                margin: 3,
-            }}>
-                <TextField
-                    sx={{
-                        marginRight: 3,
-                        width: '250px'
-                    }} 
-                    helperText='Insert Title' 
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-                <TextField
-                    select
-                    label="Select"
-                    helperText="Please select your title's style"
-                    onChange={(e) => setStyle(e.target.value)}
-                >
-                    {styles.map((option) => (
-                    
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Box>
-            <TextField
-                sx={{
-                    marginBottom: 3,
-                    width: '250px',
-                    marginLeft: 'auto',
-                    marginRight: 'auto'
-                }} 
-                helperText='Insert Background Color' 
-                onChange={(e) => setBackground(e.target.value)}
-            />
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                margin: 3
-            }}>
-                <TextField
-                    sx={{
-                        width: '200px',
-                        marginRight: 3
-                    }}
-                    select
-                    label="Select"
-                    helperText="In"
-                    onChange={(e) => setTransitionIn(e.target.value)}
-                >
-                    {transitions.map((option) => (                    
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    sx={{
-                        width: '200px'
-                    }}
-                    select
-                    label="Select"
-                    helperText="Out"
-                    onChange={(e) => setTransitionOut(e.target.value)}
-                >
-                    {transitions.map((option) => (                    
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Box>
-            <Button
-                sx={{
-                    width: '200px',
-                    margin: 'auto'
-                }}
-                variant='contained' 
-                onClick={createAsset}
-            >
-                UploadPage
-            </Button>
-            <div>
-                {data?.id && (
-                    <Box
-                        sx={{
-                            marginTop: 5
-                        }}
-                    >Upload Sucessfully! Id: {data?.id}</Box>
-                )}
-            </div>
-            <EditContent />
+            {!edited ? (
+                <>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        margin: 3
+                    }}>
+                        <TextField
+                            sx={{
+                                marginRight: 3,
+                                width: '250px'
+                            }}
+                            helperText='Insert Src Url for the Soundtrack'
+                            onChange={(e) => setSrc(e.target.value)} 
+                        />
+                        <TextField
+                            select
+                            label="Select"
+                            helperText="Please select your effect"
+                            onChange={(e) => setEffect(e.target.value)}
+                        >
+                            {effects.map((option) => (
+
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        margin: 3,
+                    }}>
+                        <TextField
+                            sx={{
+                                marginRight: 3,
+                                width: '250px'
+                            }}
+                            helperText='Insert Title'
+                            onChange={(e) => setTitle(e.target.value)} />
+                        <TextField
+                            select
+                            label="Select"
+                            helperText="Please select your title's style"
+                            onChange={(e) => setStyle(e.target.value)}
+                        >
+                            {styles.map((option) => (
+
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                        <TextField
+                            sx={{
+                                marginBottom: 3,
+                                width: '250px',
+                                marginLeft: 'auto',
+                                marginRight: 'auto'
+                            }}
+                            helperText='Insert Background Color'
+                            onChange={(e) => setBackground(e.target.value)} /><Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            margin: 3
+                        }}>
+                        <TextField
+                            sx={{
+                                width: '200px',
+                                marginRight: 3
+                            }}
+                            select
+                            label="Select"
+                            helperText="In"
+                            onChange={(e) => setTransitionIn(e.target.value)}
+                        >
+                            {transitions.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            sx={{
+                                width: '200px'
+                            }}
+                            select
+                            label="Select"
+                            helperText="Out"
+                            onChange={(e) => setTransitionOut(e.target.value)}
+                        >
+                            {transitions.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                        <Button
+                            sx={{
+                                width: '200px',
+                                margin: 'auto'
+                            }}
+                            variant='contained'
+                            onClick={createAsset}
+                        >
+                            Create your Video
+                        </Button>
+                </>
+            ) : (
+                <div>
+                        <Box
+                            sx={{
+                                marginTop: 5
+                            }}
+                        >
+                            <EditContent id={id} edited={edited} />
+                        </Box>
+                </div>
+            )}
         </Box>
     )
 }

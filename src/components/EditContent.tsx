@@ -1,15 +1,21 @@
 import { Player } from '@livepeer/react'
 import { Box, Button, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { FC, useEffect, useState } from 'react'
+import { SHOCKSTACK_API } from '../constants'
 
-const EditContent = () => {
-    const [ id, setId ] = useState('')
-    const [ data, setData ] = useState<any>([])
+interface Props {
+    id: string
+    edited: boolean
+}
 
-    const renderEditedVideo = () => {
+const EditContent: FC<Props> = ({ id, edited }) => {
+    const [url, setUrl] = useState<any>()
+
+    const upload = () => {
         const headers = {
             'Accept':'application/json',
-            'x-api-key':'yqDVoeDXc16rG78b47AeS7dHyzyb9Wko1cAVQgP8'
+            'x-api-key':`${SHOCKSTACK_API}`
           };
           
           fetch(`https://api.shotstack.io/edit/stage/render/${id}`,
@@ -21,7 +27,8 @@ const EditContent = () => {
           .then(function(res) {
               return res.json();
           }).then(function(body) {
-              setData(body?.response);
+              console.log(body?.response?.url);
+              setUrl(body?.response?.url);
           });
     }
 
@@ -37,16 +44,17 @@ const EditContent = () => {
             width: '600px'
         }}
         >
-            
-            <TextField onChange={(e) => setId(e.target.value)} />
-            <Button variant='contained' onClick={renderEditedVideo}>Search</Button>
-            <>
-                {data?.url && (
-                    <>
-                        <Player src={data?.url} />
-                    </>
-                )}
-            </>
+            Upload Sucessfully! Click to preview your video!
+            {url && (
+                <>
+                    <Player src={url} />
+                </> 
+            )}
+            {!url ? (
+                <Button variant='contained' onClick={upload}>Preview</Button>
+            ) : (
+                <Button variant='contained'>Upload</Button>
+            )}
         </Box>
     )
 }
