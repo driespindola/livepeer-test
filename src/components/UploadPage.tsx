@@ -19,12 +19,42 @@ const UploadPage = () => {
     const [ transitionIn, setTransitionIn ] = useState<string>('')
     const [ transitionOut, setTransitionOut ] = useState<string>('')
     const [ edited, setEdited ] = useState<boolean>(false)
-    const [ showVideo, setshowVideo ] = useState<boolean>(false)
     const [ expanded, setExpanded ] = useState<string | false>('panel1');
 
     const handleChange = useCallback((panel: string, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false)
     }, [])
+
+    const inputBody: InputBody = {
+        "timeline":{
+            "soundtrack":{
+               "src":`${src}`,
+               "effect":`${effect}`
+            },
+            "background":`#${background}`,
+            "tracks":[
+               {
+                  "clips":[
+                     {
+                        "asset": {
+                           "type":"title",
+                           "text":`${title}`,
+                           "style":`${style}`
+                        },
+                        "start":0,
+                        "length":5,
+                        "transition":{
+                           "in":`${transitionIn}`,
+                           "out":`${transitionOut}`
+                        }
+                     }
+                  ]
+               }
+            ]
+         },
+         "output":{"format":"mp4", "resolution":"sd"
+         }
+    };
 
     const menuItems = [
         { 
@@ -40,7 +70,7 @@ const UploadPage = () => {
         { 
             id: 'panel3', 
             text: 'Videos',
-            component: <VideoPanel />
+            component: <VideoPanel inputBody={inputBody as InputBody} />
         }
     ]
 
@@ -146,64 +176,6 @@ const UploadPage = () => {
         }
     ] 
 
-    const inputBody: InputBody = {
-        "timeline":{
-            "soundtrack":{
-               "src":`${src}`,
-               "effect":`${effect}`
-            },
-            "background":`#${background}`,
-            "tracks":[
-               {
-                  "clips":[
-                     {
-                        "asset": {
-                           "type":"title",
-                           "text":`${title}`,
-                           "style":`${style}`
-                        },
-                        "start":0,
-                        "length":5,
-                        "transition":{
-                           "in":`${transitionIn}`,
-                           "out":`${transitionOut}`
-                        }
-                     }
-                  ]
-               }
-            ]
-         },
-         "output":{"format":"mp4", "resolution":"sd"
-         }
-    };
-
-    const addVideo = () => {
-        const videoAsset: Clip = {
-            "asset": {
-                "type": "video",
-                "src": "https://shotstack-assets.s3-ap-southeast-2.amazonaws.com/footage/earth.mp4",
-                "trim": 5
-            },
-            "start": 0,
-            "length": 15,
-            "transition": {
-                "in": "fade",
-                "out": "fade"
-            },
-            "offset": {
-                "x": 0,
-                "y": 0
-            },
-            "position": "center",
-            "fit": "crop",
-            "scale": 1
-        }
-
-        inputBody.timeline.tracks[0].clips.push(videoAsset);
-
-        setshowVideo(true)
-    }
-
     const createAsset = () => {
         const headers = {
         'Content-Type':'application/json',
@@ -221,7 +193,7 @@ const UploadPage = () => {
             return res.json();
         }).then(function(body) {
             setId(body?.response?.id);
-            console.log(body?.response?.id)
+            console.log(body?.response)
         });
         setEdited(true)
     }
@@ -331,13 +303,6 @@ const UploadPage = () => {
                             ))}
                         </TextField>
                     </Box>
-                        {!edited ? (
-                            <div>
-                                <Button variant='contained' onClick={addVideo}>Want to add a video?</Button>
-                            </div>
-                        ) : (
-                            <div>Video added!</div>
-                        ) }
                         <Button
                             sx={{
                                 width: '200px',

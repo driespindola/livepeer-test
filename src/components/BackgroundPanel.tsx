@@ -6,11 +6,6 @@ interface Props {
 }
 
 const BackgroundPanel: FC<Props> = ({setBackground}) => {
-    const handleChange = (e: any) => {
-        if (e.target.value.lenght <= 6) {
-            setBackground(e.target.value)
-        }
-    }
 
     return(
         <div>
@@ -22,7 +17,7 @@ const BackgroundPanel: FC<Props> = ({setBackground}) => {
                     marginRight: 'auto'
                 }}
                     helperText='Insert Background Color'
-                    onChange={handleChange} 
+                    onChange={(e) => {setBackground(e.target.value)}} 
             />
         </div>
     )
