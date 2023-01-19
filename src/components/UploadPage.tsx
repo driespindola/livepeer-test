@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { SHOCKSTACK_API } from '../constants';
-import { Box, Button, MenuItem, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, MenuItem, TextField, Typography } from '@mui/material';
 import { Player } from '@livepeer/react';
 import EditContent from './EditContent';
+import { Clip, InputBody } from '../types/shotstack';
+import { ExpandMore } from '@mui/icons-material'
+import BackgroundPanel from './BackgroundPanel';
+import TextPanel from './TextPanel';
+import VideoPanel from './VideoPanel';
 
 const UploadPage = () => {
     const [ id, setId ] = useState<any>([])
@@ -14,8 +19,30 @@ const UploadPage = () => {
     const [ transitionIn, setTransitionIn ] = useState<string>('')
     const [ transitionOut, setTransitionOut ] = useState<string>('')
     const [ edited, setEdited ] = useState<boolean>(false)
+    const [ showVideo, setshowVideo ] = useState<boolean>(false)
+    const [ expanded, setExpanded ] = useState<string | false>('panel1');
 
+    const handleChange = useCallback((panel: string, isExpanded: boolean) => {
+        setExpanded(isExpanded ? panel : false)
+    }, [])
 
+    const menuItems = [
+        { 
+            id: 'panel1', 
+            text: 'Background',
+            component: <BackgroundPanel setBackground={setBackground} /> 
+        },
+        { 
+            id: 'panel2', 
+            text: 'Text',
+            component: <TextPanel setTitle={setTitle} setStyle={setStyle} /> 
+        },
+        { 
+            id: 'panel3', 
+            text: 'Videos',
+            component: <VideoPanel />
+        }
+    ]
 
     const effects = [
         {
@@ -118,52 +145,8 @@ const UploadPage = () => {
             label: 'Zoom'
         }
     ] 
-    
-    const styles = [
-        {
-            value: 'minimal',
-            label: 'Minimal'
-        },
-        {
-            value: 'blockbuster',
-            label: 'Blockbuster'
-        },
-        {
-            value: 'vogue',
-            label: 'Vougue'
-        },
-        {
-            value: 'sketchy',
-            label: 'Sketchy'
-        },
-        {
-            value: 'skinny',
-            label: 'Skinny'
-        },
-        {
-            value: 'chunk',
-            label: 'Chunk'
-        },
-        {
-            value: 'chunkLight',
-            label: 'Chunk Light'
-        },
-        {
-            value: 'marker',
-            label: 'Marker'
-        },
-        {
-            value: 'future',
-            label: 'Future'
-        },
-        {
-            value: 'subtitle',
-            label: 'Subtitle'
-        }
-    ] 
 
-    const createAsset = () => {
-       const inputBody = {
+    const inputBody: InputBody = {
         "timeline":{
             "soundtrack":{
                "src":`${src}`,
@@ -192,7 +175,36 @@ const UploadPage = () => {
          },
          "output":{"format":"mp4", "resolution":"sd"
          }
-        };
+    };
+
+    const addVideo = () => {
+        const videoAsset: Clip = {
+            "asset": {
+                "type": "video",
+                "src": "https://shotstack-assets.s3-ap-southeast-2.amazonaws.com/footage/earth.mp4",
+                "trim": 5
+            },
+            "start": 0,
+            "length": 15,
+            "transition": {
+                "in": "fade",
+                "out": "fade"
+            },
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "position": "center",
+            "fit": "crop",
+            "scale": 1
+        }
+
+        inputBody.timeline.tracks[0].clips.push(videoAsset);
+
+        setshowVideo(true)
+    }
+
+    const createAsset = () => {
         const headers = {
         'Content-Type':'application/json',
         'Accept':'application/json',
@@ -225,6 +237,25 @@ const UploadPage = () => {
             width: '600px'
         }}
         >
+            <div>
+                {menuItems.map(item => (
+                    <Accordion expanded={expanded === item.id} onChange={() => handleChange(item.id, !expanded)} key={item.id}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}
+                            aria-controls={`${item.id}-content`}
+                            id={`${item.id}-header`}
+                        >
+                            <Typography>
+                                {item.text}
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {item.component}
+                        </AccordionDetails>
+                    </Accordion>
+                ))}
+            </div>
+
             {!edited ? (
                 <>
                     <Box sx={{
@@ -261,41 +292,13 @@ const UploadPage = () => {
                         justifyContent: 'center',
                         margin: 3,
                     }}>
-                        <TextField
-                            sx={{
-                                marginRight: 3,
-                                width: '250px'
-                            }}
-                            helperText='Insert Title'
-                            onChange={(e) => setTitle(e.target.value)} />
-                        <TextField
-                            select
-                            label="Select"
-                            helperText="Please select your title's style"
-                            onChange={(e) => setStyle(e.target.value)}
-                        >
-                            {styles.map((option) => (
-
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
                     </Box>
-                        <TextField
-                            sx={{
-                                marginBottom: 3,
-                                width: '250px',
-                                marginLeft: 'auto',
-                                marginRight: 'auto'
-                            }}
-                            helperText='Insert Background Color'
-                            onChange={(e) => setBackground(e.target.value)} /><Box sx={{
+                            <Box sx={{
                             display: 'flex',
                             flexDirection: 'row',
                             justifyContent: 'center',
                             margin: 3
-                        }}>
+                            }}>
                         <TextField
                             sx={{
                                 width: '200px',
@@ -328,6 +331,13 @@ const UploadPage = () => {
                             ))}
                         </TextField>
                     </Box>
+                        {!edited ? (
+                            <div>
+                                <Button variant='contained' onClick={addVideo}>Want to add a video?</Button>
+                            </div>
+                        ) : (
+                            <div>Video added!</div>
+                        ) }
                         <Button
                             sx={{
                                 width: '200px',
